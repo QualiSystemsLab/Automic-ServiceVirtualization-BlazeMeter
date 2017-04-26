@@ -23,8 +23,8 @@ sv_stop_url = sv_start_ur2.replace('start', 'stop')
 sv_ip = re.search(r'://([^:/]*)[/:]', sv_stop_url).groups()[0]
 
 r = requests.post(sv_stop_url, auth=(sv_user, sv_password))
-if r.status_code >= 400:
-    raise Exception('Failed to stop virtual service %s: %d: %s' % (sv_stop_url, r.status_code, r.text))
+# if r.status_code >= 400:
+#     raise Exception('Failed to stop virtual service %s: %d: %s' % (sv_stop_url, r.status_code, r.text))
 
 csapi.Logoff()
 

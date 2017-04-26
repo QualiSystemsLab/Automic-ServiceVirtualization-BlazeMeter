@@ -19,12 +19,17 @@ sv_password = 'admin'
 sv_start_url = resource['attributes']['Web Interface']
 sv_ip = re.search(r'://([^:/]*)[/:]', sv_start_url).groups()[0]
 
-r = requests.post(sv_start_url, auth=(sv_user, sv_password))
+sv_base_url = sv_start_url.replace('actions/start', '')
+r = requests.get(sv_base_url, auth=(sv_user, sv_password))
+
 if r.status_code >= 400:
-    raise Exception('Failed to start virtual service %s: %d: %s' % (sv_start_url, r.status_code, r.text))
+    raise Exception('Failed to query virtual service %s: %d: %s' % (sv_base_url, r.status_code, r.text))
 
 port = re.search(r'<ResourceName>(\d+)', r.text).groups()[0]
 
+r = requests.post(sv_start_url, auth=(sv_user, sv_password))
+# if r.status_code >= 400:
+#     raise Exception('Failed to start virtual service %s: %d: %s' % (sv_start_url, r.status_code, r.text))
 
 for r in rd.Resources:
     if 'Apache' in r.Name:
@@ -37,4 +42,4 @@ for r in rd.Resources:
 
 csapi.Logoff()
 
-print 'Virtualized endpoint: %s:%s' % (sv_ip, port)
+print 'Virtualized SalesForce endpoint: %s:%s' % (sv_ip, port)
